@@ -6,7 +6,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from src.api.config import settings, MODEL_PATH, MAPS_PATH
-from src.inference import generate_name
+from src.core.inference import generate_name
 
 # Initialize FastAPI app
 app = FastAPI(title="Ficbot Model Inference", version="1.0")

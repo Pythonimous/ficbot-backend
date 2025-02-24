@@ -8,26 +8,9 @@ import tensorflow as tf
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from src.training.loaders import create_loader
-from src.models.img2name.img2name import Img2Name
-from src.training.vectorizer import SequenceVectorizer
-
-
-def get_model_class(model_key):
-    models = {
-        "simple_img_name": Img2Name
-    }
-    loaders = {
-        "simple_img_name": "ImgNameLoader"
-    }
-
-    model = models.get(model_key, None)
-
-    if not model:
-        sys.exit("Such model doesn't exist!")
-
-    loader = loaders[model_key]
-    return model, loader
+from src.core.loaders import create_loader
+from src.core.vectorizer import SequenceVectorizer
+from src.models.utils import get_model_class
 
 
 def load_from_checkpoint(*, checkpoint_path, data_path, model_name, **kwargs):
@@ -97,7 +80,7 @@ def model_train(model, loader, arguments):
 
 def model_train_checkpoint(arguments):
     """ Train a model from checkpoint """
-    model, loader = load_from_checkpoint(checkpoint_path=arguments.checkpoint,
+    model, loader = load_from_checkpoint(checkpoint_path=arguments.checkpoint_path,
                                                data_path=arguments.data_path,
                                                model_name=arguments.model,
                                                img_dir=arguments.img_dir, batch_size=arguments.batch_size,
@@ -114,8 +97,11 @@ def parse_arguments():
 
     train_group = parser.add_argument_group('Train', 'Training parameters')
 
+    train_group.add_argument('--train', action='store_true', help='train a model')
     train_group.add_argument('--model', default='simple_img_name', choices=['simple_img_name'],
-                             help='the model you want to train')
+                        help='the model you want to train')
+    train_group.add_argument('--checkpoint', nargs='?', metavar='CHKP', help='path to checkpoint to continue from')
+    train_group.add_argument('--maps', nargs='?', help='path to maps for vectorizer (if applicable to model)')
     train_group.add_argument('--data_path', default='data/interim/img_name.csv', metavar='DATA_PATH',
                              help='the location of your tabular data')
     train_group.add_argument('--name_col', nargs='?', help='name column in your dataframe')
@@ -123,8 +109,6 @@ def parse_arguments():
     train_group.add_argument('--img_col', nargs='?', help='image file name column in your dataframe')
     train_group.add_argument('--img_dir', default='data/raw/images', nargs='?', metavar='IMG_PATH',
                              help='the location of your images')
-    train_group.add_argument('--checkpoint', nargs='?', metavar='CHKP', help='path to checkpoint to train from')
-    train_group.add_argument('--maps', nargs='?', help='path to maps for vectorizer (if applicable to model)')
     train_group.add_argument('--checkpoint_dir', default='checkpoints/',
                              help='directory where the checkpoints will be saved')
     train_group.add_argument('--batch_size', type=int, default=16,
@@ -135,6 +119,7 @@ def parse_arguments():
                              nargs='?', help='max sequence length for sequence-based generation')
     train_group.add_argument('--optimizer', default='adam', choices=['adam', 'rmsprop'],
                              help='optimizer to use during training')
+
     
     args = parser.parse_args()
     return args

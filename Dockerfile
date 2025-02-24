@@ -7,8 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/api src/api
 COPY src/models/img2name/files src/models/img2name/files
-COPY src/inference.py src/inference.py
-COPY src/utils.py src/utils.py
+COPY src/core/inference.py src/core/inference.py
+COPY src/core/utils.py src/core/utils.py
 
 EXPOSE 8080
 

@@ -155,5 +155,5 @@ dmypy.json
 /src/frontend/static/images/*
 !/src/frontend/static/images/example.jpg
 
-# Lambda
-/src/core/models/img2name/lambda
+# Training files
+/data
