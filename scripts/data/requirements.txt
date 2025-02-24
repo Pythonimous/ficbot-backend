@@ -1,0 +1,9 @@
+tqdm
+numpy
+pandas
+num2words
+Pillow
+ImageHash
+requests
+beautifulsoup4
+selenium

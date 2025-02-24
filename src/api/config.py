@@ -5,5 +5,5 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-MODEL_PATH = "/app/models/img2name/files/img2name.keras"
-MAPS_PATH = "/app/models/img2name/files/maps.pkl"
+MODEL_PATH = "/app/src/models/img2name/files/img2name.keras"
+MAPS_PATH = "/app/src/models/img2name/files/maps.pkl"

@@ -2,7 +2,7 @@ import unittest
 
 import tensorflow as tf
 
-from src.training.models.img2name import Img2Name
+from src.models.img2name.img2name import Img2Name
 
 class TestModels(unittest.TestCase):
 

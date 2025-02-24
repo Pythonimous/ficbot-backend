@@ -3,8 +3,8 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from training.utils import get_image
-from training.vectorizer import SequenceVectorizer
+from src.utils import get_image
+from src.training.vectorizer import SequenceVectorizer
 
 
 class ImageLoader(object):

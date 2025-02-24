@@ -4,11 +4,9 @@ import base64
 
 from fastapi.testclient import TestClient
 
-from src.inference.config import settings
+from src.api.config import settings
 
 from tests.config import current_dir
-
-
 
 class TestInference(unittest.TestCase):
 
@@ -18,7 +16,7 @@ class TestInference(unittest.TestCase):
 
     def test_image_to_name(self):
 
-        from src.inference.main import app
+        from src.api.main import app
         client = TestClient(app)
         
         response = client.get("/health/")
