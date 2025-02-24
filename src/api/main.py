@@ -25,7 +25,7 @@ with open(MAPS_PATH, "rb") as mp:
 
 print("Model and mappings loaded!")
 
-@app.post("/generate/")
+@app.post("/generate")
 async def generate_character_name(request: Request):
     """ Receives an image, runs inference, and returns a generated name. """
     try:

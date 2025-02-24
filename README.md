@@ -191,12 +191,12 @@ docker run -p 8080:8080 ficbot
 Once running, you can access ficbot-backend endpoints at server address.
 You can test it using the following command:
 ```bash
-curl -X GET "http://localhost:8080/health/"
+curl -X GET "http://localhost:8080/health"
 
 ```
 You can do inference using the following command:
 ```bash
-curl -X POST "http://localhost:8080/generate/" \
+curl -X POST "http://localhost:8080/generate" \
      -H "Content-Type: application/json" \
      -d '{"image": "<YOUR_BINARY_IMAGE>", "diversity": 1.2, "min_name_length": 2}'
 
