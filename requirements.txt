@@ -5,3 +5,4 @@ tensorflow
 pillow
 pydantic_settings
 pandas
+httpx
