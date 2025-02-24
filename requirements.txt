@@ -4,3 +4,4 @@ numpy
 tensorflow
 pillow
 pydantic_settings
+pandas
