@@ -97,7 +97,6 @@ def parse_arguments():
 
     train_group = parser.add_argument_group('Train', 'Training parameters')
 
-    train_group.add_argument('--train', action='store_true', help='train a model')
     train_group.add_argument('--model', default='simple_img_name', choices=['simple_img_name'],
                         help='the model you want to train')
     train_group.add_argument('--checkpoint', nargs='?', metavar='CHKP', help='path to checkpoint to continue from')
