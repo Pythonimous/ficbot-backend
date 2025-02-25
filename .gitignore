@@ -155,5 +155,8 @@ dmypy.json
 /src/frontend/static/images/*
 !/src/frontend/static/images/example.jpg
 
-# Training files
-/data
+# Data related stuff
+/scripts/data/logs
+/scripts/data/chromedriver
+/scripts/data/images
+/scripts/data/interim

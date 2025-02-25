@@ -144,11 +144,23 @@ pip install -r requirements.txt
 
 ## **🚀 Running the Application**
 
-  
+### Downloading data  
 
-### Training and inference
+1. Download character links (Selenium)
 
-  
+```bash
+python scripts/data/download.py --get_links --link_path LINKS_SAVE_PATH
+
+```
+
+2. Download character data + images (Jikan API)
+
+```bash
+python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTERS_SAVE_PATH --img_dir IMAGE_SAVE_DIRECTORY
+
+```
+
+### Training and inference  
 
 1. Training from scratch
 
