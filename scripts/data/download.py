@@ -28,13 +28,19 @@ def beautify_bio(bio):
     if not bio:
         return ""
     
+    if bio == "No biography written.":
+        return ""
+    
     bio = bio.strip()
     bio = re.sub(r"\(Source: .+?\)$", "", bio)
     bio = "\n".join(bio.splitlines())
     bio = re.sub(r'\n+', '\n', bio).strip()
 
-    if bio == "No biography written.":
-        bio = ""
+    bio = bio.split('\n')
+    if 'No voice actors have been added' in bio[-1]:
+        bio = bio[:-1]
+    bio = '\n'.join(bio)
+    
     return bio
 
 
@@ -153,7 +159,7 @@ def download_characters(data_path, link_path, img_dir, config):
                     mal_characters.at[index, 'img_link'] = image_url
                     mal_characters.at[index, 'img_index'] = get_image(image_url, img_dir, config)
                 else:
-                    mal_characters.at[index, 'img_index'] = "-1"
+                    mal_characters.at[index, 'img_index'] = ""
 
                 session_count += 1
 

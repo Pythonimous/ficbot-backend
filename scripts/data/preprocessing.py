@@ -114,23 +114,21 @@ def clear_corpus_characters(corpus, exclude_threshold: int = 100):
 
 
 def prepare_raw_dataset(df_path, save_path):
-    mal_characters = pd.read_csv(df_path)
+    mal_characters = pd.read_csv(df_path).fillna('')
+    mal_dataset = mal_characters[["eng_name", "bio", "img_index"]].reset_index(drop=True)
+    mal_dataset['image'] = mal_dataset['img_index'].map(lambda x: f"{x}.jpg")
+    del mal_dataset['img_index']
 
-    mal_w_images = mal_characters[mal_characters.img_index != "-1"]  # only rows with images
-    mal_img_name = mal_w_images[["eng_name", "img_index"]].reset_index(drop=True)  # only name + image rows
-
-    mal_img_name["image"] = mal_img_name["img_index"].map(lambda x: x + ".jpg")
-    del mal_img_name["img_index"]
-
-    mal_img_name["eng_name"] = clear_corpus_characters(mal_img_name["eng_name"], 100)
-
-    mal_img_name.to_csv(save_path, index_label=False)
+    mal_dataset['name'] = mal_dataset['eng_name']
+    del mal_dataset['eng_name']
+    mal_dataset = mal_dataset[['name', 'bio', 'image']]
+    mal_dataset.to_csv(save_path, index_label=False)
 
 
 def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    input_path = os.path.join(current_dir, "../../data/raw/anime_characters.csv")
-    output_path = os.path.join(current_dir, "../../data/interim/img_name.csv")
+    input_path = os.path.join(current_dir, "interim/anime_characters_all.csv")
+    output_path = os.path.join(current_dir, "interim/name_bio_image.csv")
     prepare_raw_dataset(input_path, output_path)
 
 
