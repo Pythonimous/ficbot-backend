@@ -76,20 +76,20 @@ Ficbot is now split into two repositories for better organization:
 -  **Deployment & Infrastructure:**
    -  **Docker + AWS Lightsail:** A reliable and cost-effective VPS solution.
 
-  
-  
+---
 
-👉 The project originated from **anime character data** on [MyAnimeList](https://myanimelist.net/) and was later expanded to different writing applications.
+## 📊 Dataset & Exploratory Notebook  
 
-  
+Ficbot's AI models were trained using a **public dataset** of anime characters, which I compiled and explored in depth.  
 
-----
+🔹 **Dataset on Kaggle:** [Anime Character Dataset](https://www.kaggle.com/datasets/37798ba55fed88400b584cd0df4e784317eb7a6708e02fd5a650559fb4598353)  
+🔹 **Exploratory Data Analysis Notebook:** [View on Kaggle](https://www.kaggle.com/code/ophelion/myanimelist-dataset-exploratory-notebook)  
 
-  
+This dataset includes **over 106,000 characters**, with names, bios, and images, making it a valuable resource for training NLP models.  
+
+---  
 
 ## **✨ Features**
-
-  
 
 ### ✅ **Currently Available**
 
@@ -252,3 +252,4 @@ This project is **open-source** under the BSD-3-Clause license.
 🔹 **Live Demo**: [ficbotweb.com](https://ficbotweb.com)  
 🔹 **Ficbot**: [ficbot](https://github.com/Pythonimous/ficbot)  
 🔹 **Dataset**: [Kaggle](http://www.kaggle.com/dataset/37798ba55fed88400b584cd0df4e784317eb7a6708e02fd5a650559fb4598353)
+🔹 **Exploratory Data Analysis Notebook:** [Kaggle](https://www.kaggle.com/code/ophelion/myanimelist-dataset-exploratory-notebook)  
