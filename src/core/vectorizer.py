@@ -50,6 +50,8 @@ class Mapper(object):
         return self._token_n, self._n_token
 
     def save_maps(self, save_folder):
+        if not os.path.exists(save_folder):
+            os.makedirs(save_folder)
         map_path = os.path.join(save_folder, "maps.pkl")
         maps = [self._token_n, self._n_token]
         with open(map_path, "wb") as mp:
@@ -93,8 +95,8 @@ class SequenceVectorizer(Mapper):
             maxlen (int): Maximum subsequence length
             step (int): Sequenization step (we take a sequence every STEP tokens).
         Returns:
-            sequences (list[str] | list[list[str]]): List of subsequences of length maxlen.
-            next_chars (list[str] | list[list[str]]): List of tokens following after each corresponding sequence.
+            sequences (List[str] or List[List[str]]): List of subsequences of length maxlen.
+            next_chars (List[str] or List[List[str]]): List of tokens following after each corresponding sequence.
 
         """
         text = self._tokenize_text(text)

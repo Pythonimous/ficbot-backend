@@ -127,8 +127,8 @@ def prepare_raw_dataset(df_path, save_path):
 
 def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    input_path = os.path.join(current_dir, "interim/anime_characters_all.csv")
-    output_path = os.path.join(current_dir, "interim/name_bio_image.csv")
+    input_path = os.path.join(current_dir, "anime_characters.csv")
+    output_path = os.path.join(current_dir, "name_bio_image.csv")
     prepare_raw_dataset(input_path, output_path)
 
 

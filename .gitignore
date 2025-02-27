@@ -160,3 +160,6 @@ dmypy.json
 /scripts/data/chromedriver
 /scripts/data/images
 /scripts/data/interim
+
+/data
+/src/models/name2bio/

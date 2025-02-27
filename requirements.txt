@@ -4,3 +4,14 @@ numpy
 tensorflow
 pillow
 pydantic_settings
+transformers
+dataset
+sentencepiece
+torch
+accelerate
+bert_score
+mauve-text
+evaluate
+optimum
+optimum-intel
+neural-compressor
