@@ -132,7 +132,7 @@ def train_from_scratch(arguments):
         img_dir=arguments.img_dir,
         batch_size=arguments.batch_size,
         shuffle=True,
-        num_workers=4
+        num_workers=arguments.num_workers
     )
     loader.dataset.vectorizer.save_maps(arguments.checkpoint_dir)
     vocab_size = loader.dataset.vectorizer.get_vocab_size()
@@ -178,6 +178,7 @@ def parse_arguments():
 
     parser.add_argument("--checkpoint_dir", type=str, required=True, help="Directory to save checkpoints.")
     parser.add_argument("--batch_size", type=int, default=16, help="Batch size for training.")
+    parser.add_argument("--num_workers", type=int, default=4, help="Number of workers for data loader.")
     parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs.")
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate.")
     parser.add_argument("--maxlen", type=int, default=3, help="Maximum sequence length.")
