@@ -29,9 +29,8 @@ class Img2Name(nn.Module):
         self.transfer = mobilenet.features
         self.global_avg_pool = nn.AdaptiveAvgPool2d((1, 1))  # Global Average Pooling
 
-        if not fine_tune:
-            for param in self.transfer.parameters():
-                param.requires_grad = False  # Freeze MobileNet if fine_tune=False
+        for param in self.transfer.parameters():
+            param.requires_grad = fine_tune  # Fine-tune MobileNet if fine_tune=True
 
         # Bidirectional LSTM for Better Contextual Understanding
         self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=128, batch_first=True, bidirectional=True)

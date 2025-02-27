@@ -3,6 +3,8 @@ import sys
 import os
 import pickle
 
+from collections import OrderedDict
+
 from io import BytesIO
 from PIL import Image
 
@@ -132,7 +134,12 @@ def main(arguments):
         raise ValueError("Model weights not found")
     
     model = models_dict[arguments.model](**init_params)
-    model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))  # Load model for inference
+    model_state_dict = torch.load(weights_path, map_location=torch.device('cpu'))
+    
+    if 'model_state_dict' in model_state_dict:  # checkpoint instead of just a state_dict
+        model_state_dict = model_state_dict['model_state_dict']
+
+    model.load_state_dict(model_state_dict)  # Load model for inference
 
     # Load character mappings
     if arguments.maps:

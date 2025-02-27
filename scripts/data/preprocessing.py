@@ -122,6 +122,7 @@ def prepare_raw_dataset(df_path, save_path):
     mal_dataset['name'] = mal_dataset['eng_name']
     del mal_dataset['eng_name']
     mal_dataset = mal_dataset[['name', 'bio', 'image']]
+    mal_dataset['name'] = clear_corpus_characters(mal_dataset['name'], 100)
     mal_dataset.to_csv(save_path, index_label=False)
 
 

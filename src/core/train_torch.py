@@ -111,16 +111,24 @@ def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, sa
         # Save checkpoints at intervals
         if epoch % save_interval == 0:
             save_path = os.path.join(checkpoint_dir, f"checkpoint_epoch_{epoch}.pt")
+            try:
+                state_dict = model.module.state_dict()
+            except AttributeError:
+                state_dict = model.state_dict()
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": state_dict,
                 "optimizer_state_dict": optimizer.state_dict(),
                 "loss": avg_loss
             }, save_path)
             print(f"Checkpoint saved: {save_path}")
 
     final_model_path = os.path.join(checkpoint_dir, "model_final.pt")
-    torch.save(model.state_dict(), final_model_path)
+    try:
+        state_dict = model.module.state_dict()
+    except AttributeError:
+        state_dict = model.state_dict()
+    torch.save(state_dict, final_model_path)
 
     print(f"Training complete. Final model saved at {final_model_path}")
 
