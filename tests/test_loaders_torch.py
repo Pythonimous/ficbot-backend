@@ -40,7 +40,6 @@ class TestLoaders(unittest.TestCase):
 
             # Compute n_sequences dynamically
             n_sequences = sum(len(name) + 1 for name in batch_names)  # +1 for end token
-            vocab_size = self.data_loader.dataset.vectorizer.get_vocab_size()
 
             # Check tensor types
             self.assertIsInstance(X_img_batch, torch.Tensor)
@@ -52,10 +51,10 @@ class TestLoaders(unittest.TestCase):
             self.assertEqual(X_img_batch.shape, expected_img_batch_shape)
 
             # Expected sequence batch shape: (n_sequences, maxlen)
-            self.assertEqual(X_seq_batch.shape, (n_sequences, self.maxlen, vocab_size))
+            self.assertEqual(X_seq_batch.shape, (n_sequences, self.maxlen))
 
             # Expected output shape: (n_sequences, vocab_size)
-            self.assertEqual(y_batch.shape, (n_sequences, vocab_size))
+            self.assertEqual(y_batch.shape, (n_sequences,))
 
             break  # Only test the first batch
 

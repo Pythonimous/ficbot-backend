@@ -52,7 +52,7 @@ def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
     return model, loader
 
 
-def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, save_interval=5, verbose=True):
+def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, save_interval=1, verbose=True):
     """
     Trains a model using the given dataset.
 
@@ -97,6 +97,10 @@ def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, sa
 
             total_loss += loss.item()
             batch_losses.append(loss.item())
+
+            if batch_idx % 10 == 0 and verbose:
+                avg_loss = total_loss / (batch_idx + 1)
+                progress_bar.set_postfix(loss=avg_loss)
 
         avg_loss = total_loss / len(loader)
         epoch_time = time.time() - start_time  # Compute time per epoch

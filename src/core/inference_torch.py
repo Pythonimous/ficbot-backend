@@ -50,17 +50,14 @@ def generate_name(model, maps,
 
     maxlen = model.maxlen  # Model’s expected max sequence length
 
-    # Start sequence as token indices
-    name_tokens = [char_idx[start_token]] * maxlen  # List of indices
+    name_tokens = torch.tensor([[char_idx[start_token]] * maxlen], dtype=torch.long, device=device)  # (1, maxlen)
+
     generated = ""
 
     with torch.no_grad():  # No need to track gradients
         while not (generated.endswith(start_token) or generated.endswith(end_token)):
-            # Convert list to tensor (1, maxlen) and send to device
-            name_tensor = torch.tensor([name_tokens], dtype=torch.long, device=device)
-
             # Get model predictions
-            preds = model(image_tensor, name_tensor)  # (1, vocab_size)
+            preds = model(image_tensor, name_tokens)  # (1, vocab_size)
             preds = F.softmax(preds / diversity, dim=-1)  # Apply temperature scaling
 
             next_char = ood_token
@@ -71,8 +68,7 @@ def generate_name(model, maps,
             if next_char == end_token and generated.count(' ') < min_name_length - 1:
                 next_char = " "  # Ensure minimum name length
 
-            # Shift tokens: Remove first, add new token
-            name_tokens = name_tokens[1:] + [char_idx[next_char]]
+            name_tokens = torch.cat([name_tokens[:, 1:], torch.tensor([[char_idx[next_char]]], device=device)], dim=1)
             generated += next_char
 
     # Remove start/end tokens if present

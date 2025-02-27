@@ -7,7 +7,7 @@ from torch.nn.utils.rnn import pad_sequence
 import pandas as pd
 
 from src.core.utils import get_image
-from src.core.vectorizer import SequenceVectorizer
+from src.core.vectorizer_torch import SequenceVectorizer
 
 
 class ImageLoader(object):
@@ -24,10 +24,10 @@ class NameLoader(object):
 
     def _get_sequences(self, name: str, maxlen: int, step: int = 1):
         """
-        Converts a given name into multiple one-hot encoded sequences for training.
+        Converts a given name into multiple token index sequences for training.
 
         Each input name is split into overlapping sequences of length `maxlen`, 
-        where each token is mapped to a one-hot encoded vector representation.
+        where each token is mapped to its corresponding index
 
         Args:
             name (str): The input character sequence.
@@ -36,12 +36,12 @@ class NameLoader(object):
 
         Returns:
             tuple:
-                - vector_seq (numpy.ndarray): A 3D array of shape 
-                  `(num_sequences, maxlen, vocab_size)`, where each sequence 
-                  is one-hot encoded.
-                - vector_next (numpy.ndarray): A 2D array of shape 
-                  `(num_sequences, vocab_size)`, representing the next 
-                  token for each sequence as a one-hot encoded vector.
+                - vector_seq (numpy.ndarray): A 2D array of shape 
+                `(num_sequences, maxlen)`, where each sequence contains 
+                token indices
+                - vector_next (numpy.ndarray): A 1D array of shape 
+                `(num_sequences,)`, representing the next token for 
+                each sequence as an integer index.
         """
         vector_sequences, vector_next = self.vectorizer.vectorize(
             name, maxlen=maxlen, step=step
@@ -132,38 +132,35 @@ def collate_fn(batch):
     """
     Custom collate function to handle variable-length sequences and ensure proper
     alignment of images and sequences.
-    
+
     Args:
-        batch (list): A list of tuples (X_img, X_seq), y from Dataset.__getitem__
+        batch (list): A list of tuples ((X_img, X_seq), y) from Dataset.__getitem__
 
     Returns:
         tuple: 
-            - X_img_batch (tensor): Shape (batch_size, 3, 224, 224)
-            - X_seq_batch (tensor): Padded sequences, shape (batch_size, max_seq_len)
-            - y_batch (tensor): Padded target sequences, shape (batch_size, vocab_size)
+            - X_img_batch (tensor): Shape (n_sequences, 3, 224, 224)
+            - X_seq_batch (tensor): Padded sequences, shape (n_sequences, max_seq_len)
+            - y_batch (tensor): Target token indices, shape (n_sequences,)
     """
     X_img_list, X_seq_list, y_list = [], [], []
+    
     for (img, seq), y in batch:
         num_sequences = seq.shape[0]  # Number of sequences generated from this name
 
+        # Expand image tensor for each sequence (same image, different text sequences)
         X_img_expanded = img.unsqueeze(0).expand(num_sequences, -1, -1, -1)  # (num_sequences, 3, 224, 224)
-        X_img_list.append(X_img_expanded)  # Keep as separate tensors
-        
-        X_seq_list.extend(seq)  # Append all generated sequences
-        y_list.extend(y)  # Append all target sequences
-    
-    # Convert images to a tensor (now correctly expanded)
-    X_img_batch = torch.cat(X_img_list, dim=0)  # (n_sequences, C, H, W)
+        X_img_list.append(X_img_expanded)
 
-    # Pad sequences to the max length in the batch
-    X_seq_batch = pad_sequence(X_seq_list, batch_first=True, padding_value=0)
+        X_seq_list.extend(seq)  # Append tokenized sequences
+        y_list.extend(y.tolist())  # Append next token indices (already integers)
 
-    # Convert from one-hot to token indices if needed (i.e. embedding layer instead of one-hot)
-    if X_seq_batch.dim() == 3 and X_seq_batch.shape[-1] > 1:
-        X_seq_batch = torch.argmax(X_seq_batch, dim=-1)  # Convert to (n_sequences, max_seq_len)
-        X_seq_batch = X_seq_batch.long()
-        
-    y_batch = pad_sequence(y_list, batch_first=True, padding_value=0)
+    # Convert images to a single batch tensor
+    X_img_batch = torch.cat(X_img_list, dim=0)  # (n_sequences, 3, 224, 224)
+
+    # Pad tokenized sequences to match max sequence length in batch
+    X_seq_batch = pad_sequence(X_seq_list, batch_first=True, padding_value=0).long()  # (n_sequences, max_seq_len)
+
+    y_batch = torch.tensor(y_list, dtype=torch.long)  # (n_sequences,)
 
     return (X_img_batch, X_seq_batch), y_batch
 

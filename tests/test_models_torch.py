@@ -17,7 +17,7 @@ class TestModels(unittest.TestCase):
         self.assertIsInstance(simple_name_torch, nn.Module)
 
         sample_image = torch.randn(1, 3, 224, 224)  # (batch_size=1, C=3, H=224, W=224)
-        sample_name = torch.randint(0, 420, (1, 3), dtype=torch.long)  # ✅ Token indices, not one-hot
+        sample_name = torch.randint(0, 420, (1, 3), dtype=torch.long)
 
         # Forward pass
         output = simple_name_torch(sample_image, sample_name)
