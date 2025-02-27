@@ -88,10 +88,6 @@ def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, sa
             total_loss += loss.item()
             batch_losses.append(loss.item())
 
-            # Print loss every 10 batches
-            if verbose and batch_idx % 10 == 0:
-                print(f"Batch {batch_idx}/{len(loader)} - Loss: {loss.item():.4f}")
-
         avg_loss = total_loss / len(loader)
         epoch_time = time.time() - start_time  # Compute time per epoch
 
