@@ -30,6 +30,11 @@ def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
         tuple: (model, dataset loader)
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs")
+        model = torch.nn.DataParallel(model)
+
     checkpoint = torch.load(checkpoint_path, map_location=device)
 
     with open(kwargs["maps_path"], "rb") as f:
@@ -61,6 +66,11 @@ def train_model(model, loader, checkpoint_dir, epochs=1, learning_rate=0.001, sa
         verbose (bool): Whether to print detailed progress.
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs")
+        model = torch.nn.DataParallel(model)
+    
     model.to(device)
     model.train()
 
