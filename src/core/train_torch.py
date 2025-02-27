@@ -31,10 +31,6 @@ def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    if torch.cuda.device_count() > 1:
-        print(f"Using {torch.cuda.device_count()} GPUs")
-        model = torch.nn.DataParallel(model)
-
     checkpoint = torch.load(checkpoint_path, map_location=device)
 
     with open(kwargs["maps_path"], "rb") as f:
