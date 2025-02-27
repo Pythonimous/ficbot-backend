@@ -7,6 +7,8 @@ import pandas as pd
 
 from num2words import num2words
 
+import unicodedata
+
 
 def replace_text_numbers(text):
     """ Replaces all numbers in a string with words """
@@ -62,37 +64,10 @@ def clear_text_characters(text, exception_set=None):
         else:
             text_clean += ' '
 
-    # TODO: Expand character_dict, or find pre-made dictionary
-    character_dict = {
-        'á': 'a',
-        'ä': 'ae',
-        'å': 'aa',
-        'è': 'e',
-        'é': 'e',
-        'ê': 'e',
-        'ë': 'e',
-        'ó': 'o',
-        'ô': 'oo',
-        'ö': 'oe',
-        'ø': 'oe',
-        'ü': 'ue',
-        'œ': 'oe',
-        'š': 'sh'
-    }
-    rare_characters_lower = list(character_dict.keys())
-    for char in rare_characters_lower:
-        character_dict[char.upper()] = character_dict[char].capitalize()
 
-    text = ''
+    text = ''.join(c for c in unicodedata.normalize('NFKD', text_clean) if unicodedata.category(c) != 'Mn')
 
-    for char in text_clean:
-        if char in character_dict:
-            text += character_dict[char]
-        else:
-            text += char
-
-    text = re.sub(r' +', ' ', text).strip()
-    text = text[0].capitalize() + text[1:]
+    text = re.sub(r' +', ' ', text).strip().capitalize()
     return text
 
 
