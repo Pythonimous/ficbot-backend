@@ -33,7 +33,7 @@ Ficbot is now split into two repositories for better organization:
 
   - The **AI inference service** that processes images and generates names.
 
-  - The **ML models** and related dependencies (TensorFlow, etc.).
+  - The **ML models** and related dependencies (Torch, etc.).
 
   - Training scripts, dataset processing, and exploratory notebooks.
 
@@ -57,7 +57,7 @@ Ficbot is now split into two repositories for better organization:
 
 - **Machine Learning & Inference:**
 
-  - **TensorFlow:** Powers the AI model used for generating character names from images.
+  - **PyTorch:** Powers the AI model used for generating character names from images.
 
   - **FastAPI:** Also used in the backend inference service for serving predictions.
 
@@ -165,7 +165,7 @@ python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTE
 1. Training from scratch
 
 ```bash
-python src/core/train.py --model MODEL_NAME --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3 --optimizer adam
+python src/core/train.py --data_path DATA_PATH --img_col IMG_COL --name_col NAME_COL --img_dir IMG_DIR ---batch_size 16 --epochs 1 --maxlen 3 --optimizer adam -checkpoint_dir CHECKPOINT_DIR 
 
 ```
 
@@ -179,7 +179,7 @@ python src/core/train.py --model MODEL_NAME --checkpoint CHECKPOINT_PATH --maps 
  3. Inference
 
 ```bash
-python src/core/inference.py --model MODEL_NAME --model_path MODEL_PATH --maps MAPS_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.2
+python src/core/inference.py --model MODEL_NAME --model_path MODEL_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.0
   ```
 
 ## 🛠 Docker Deployment
@@ -229,8 +229,7 @@ python -m unittest
 ```bash
 pip install coverage
 coverage run -m unittest
-coverage report # Current coverage: 74%
-coverage html -d coverage_html # interactive html reporting
+coverage report -i
 
 ```
 ## **📌 Contributing**
