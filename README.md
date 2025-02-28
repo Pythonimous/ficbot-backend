@@ -196,7 +196,7 @@ docker build -t img2name .
 ### 2️⃣ Run the Container
 
 ```bash
-docker run -p 8080:8080 ficbot
+docker run -p 8080:8080 img2name
 
 ```  
 

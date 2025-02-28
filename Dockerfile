@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/api src/api
-COPY src/models/img2name/files src/models/img2name/files
+COPY src/models/img2name src/models/img2name
 COPY src/core/inference.py src/core/inference.py
 COPY src/core/utils.py src/core/utils.py
 

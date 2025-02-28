@@ -7,10 +7,7 @@ transformers
 dataset
 sentencepiece
 torch
+torchvision
 accelerate
-bert_score
-mauve-text
 evaluate
-optimum
-optimum-intel
-neural-compressor
+tqdm

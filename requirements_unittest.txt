@@ -10,3 +10,4 @@ num2words
 bs4
 selenium
 tqdm
+torch
