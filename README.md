@@ -33,7 +33,7 @@ Ficbot is now split into two repositories for better organization:
 
   - The **AI inference service** that processes images and generates names.
 
-  - The **ML models** and related dependencies (Torch, etc.).
+  - The **ML models** and related dependencies (PyTorch, etc.).
 
   - Training scripts, dataset processing, and exploratory notebooks.
 
