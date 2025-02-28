@@ -32,9 +32,9 @@ class TestPreprocess(unittest.TestCase):
             "åchen."
         ]
         self.corpus_clean = [
-            "Aabb . one ccddeeninety nine",
-            "Ccddeeffgg hJAKLm",
-            "Aachen."
+            "aabb . one ccddeeninety nine",
+            "ccddeeffgg hJAKLm",
+            "achen."
         ]
 
     def test_replace_text_numbers(self):
@@ -61,9 +61,9 @@ class TestPreprocess(unittest.TestCase):
         self.assertEqual(preprocessing.clear_text_characters("Ángela Salas Larrazábal"),
                          "Angela Salas Larrazabal"),
         self.assertEqual(preprocessing.clear_text_characters("Simo Häyhä"),
-                         "Simo Haeyhae"),
+                         "Simo Hayha"),
         self.assertEqual(preprocessing.clear_text_characters("Christine Waldegård"),
-                         "Christine Waldegaard"),
+                         "Christine Waldegard"),
         self.assertEqual(preprocessing.clear_text_characters("Selim Vergès"),
                          "Selim Verges"),
         self.assertEqual(preprocessing.clear_text_characters("Padmé Amidala"),
@@ -75,21 +75,21 @@ class TestPreprocess(unittest.TestCase):
         self.assertEqual(preprocessing.clear_text_characters("Bernardo Dión"),
                          "Bernardo Dion"),
         self.assertEqual(preprocessing.clear_text_characters("Gérôme Hongou"),
-                         "Geroome Hongou"),
+                         "Gerome Hongou"),
         self.assertEqual(preprocessing.clear_text_characters("Arad Mölders"),
-                         "Arad Moelders"),
+                         "Arad Molders"),
         self.assertEqual(preprocessing.clear_text_characters("Tor Nørretranders"),
-                         "Tor Noerretranders"),
+                         "Tor Norretranders"),
         self.assertEqual(preprocessing.clear_text_characters("Jürgen von Klügel"),
-                         "Juergen von Kluegel"),
+                         "Jurgen von Klugel"),
         self.assertEqual(preprocessing.clear_text_characters("Œlaf"),
-                         "Oelaf"),
+                         "OElaf"),
         self.assertEqual(preprocessing.clear_text_characters("Daša Urban"),
-                         "Dasha Urban")
+                         "Dasa Urban")
         self.assertEqual(preprocessing.clear_text_characters("02,';'1"),
-                         "Zero two one")
+                         "zero two one")
         self.assertEqual(preprocessing.clear_text_characters("Åll your 1.2 bases are. SO bel']ong to-us 13"),
-                         "Aall your one point two bases are. SO bel ong to-us thirteen")
+                         "All your one point two bases are. SO bel ong to-us thirteen")
 
     def test_clear_corpus(self):
         self.assertListEqual(preprocessing.clear_corpus_characters(self.corpus_dirty, 1), self.corpus_clean)

@@ -47,7 +47,7 @@ def replace_text_numbers(text):
     return text.strip()
 
 
-def clear_text_characters(text, exception_set=None):
+def clear_text_characters(text, exception_set=None, capitalize_words=False):
     """
     Clears text from all non-alphanumeric characters not in exception_set.
     Transforms non-latin characters to latin alternatives.
@@ -67,7 +67,20 @@ def clear_text_characters(text, exception_set=None):
 
     text = ''.join(c for c in unicodedata.normalize('NFKD', text_clean) if unicodedata.category(c) != 'Mn')
 
-    text = re.sub(r' +', ' ', text).strip().capitalize()
+    manual_replacements = {
+        'Œ': 'OE', 'œ': 'oe',
+        'Æ': 'AE', 'æ': 'ae',
+        'ß': 'ss',  # German sharp S
+        'Ø': 'O', 'ø': 'o',  # Scandinavian O-slash
+    }
+
+    for original, replacement in manual_replacements.items():
+        text = text.replace(original, replacement)
+
+    text = re.sub(r' +', ' ', text).strip()
+    if capitalize_words:
+        text = ' '.join([word.capitalize() for word in text.split()])
+        
     return text
 
 

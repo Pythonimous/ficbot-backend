@@ -46,16 +46,16 @@ class TestTokenizer(unittest.TestCase):
         self.ood_name_sequences = ["?en", "en?", "n?e"]
         self.ood_name_next = ["?", "e", "i"]
 
-        seq_example_vectors = os.path.join(self.current_dir, "files/features/vectorize_char.npy")
-        with open(seq_example_vectors, 'rb') as f:
-            self.seq_name_sequences_vector = np.load(f)
-            self.seq_name_next_vector = np.load(f)
+        seq_example_vectors = os.path.join(self.current_dir, "files/features/vectorize_char_torch.npz")
+        with np.load(seq_example_vectors, allow_pickle=True) as vectors:
+            self.seq_name_sequences_vector = vectors['seq_name_sequences_vector']
+            self.seq_name_next_vector = vectors['seq_name_next_vector']
 
         self.char_sequenizer = SequenceVectorizer(corpus=self.seq_name_corpus,
                                                                              char_level=True)
 
     def test_tokenize_characters(self):
-        example_clean, char_map_test, n_map_test = self.char_mapper.create_text_map(self.char_example)
+        _, char_map_test, n_map_test = self.char_mapper.create_text_map(self.char_example)
         self.assertDictEqual(self.char_map, char_map_test)
         self.assertDictEqual(self.n_map, n_map_test)
 

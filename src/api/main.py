@@ -1,23 +1,25 @@
-import tensorflow as tf
 import base64
 import pickle
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from src.api.config import settings, MODEL_PATH, MAPS_PATH
-from src.core.inference import generate_name
+from src.api.config import settings, WEIGHTS_PATH, MAPS_PATH, PARAMETERS_PATH
+from src.models.img2name.img2name import Img2Name
+from src.core.inference import load_model, generate_name
 
 # Initialize FastAPI app
 app = FastAPI(title="Ficbot Model Inference", version="1.0")
 
 if settings.testing:
-    MODEL_PATH = "src/models/img2name/files/img2name.keras"
+    WEIGHTS_PATH = "src/models/img2name/files/weights.pt"
     MAPS_PATH = "src/models/img2name/files/maps.pkl"
+    PARAMETERS_PATH = "src/models/img2name/files/params.pkl"
 
-# Load TensorFlow model on startup
+# Load Torch model on startup
 print("Loading model...")
-model = tf.keras.models.load_model(MODEL_PATH)
+model = load_model(WEIGHTS_PATH, PARAMETERS_PATH, Img2Name)
+model.eval()
 
 # Load character mappings
 with open(MAPS_PATH, "rb") as mp:
@@ -31,7 +33,7 @@ async def generate_character_name(request: Request):
     try:
         body = await request.json()
         image_bytes = base64.b64decode(body["image"])
-        diversity = float(body.get("diversity", 1.2))
+        diversity = float(body.get("diversity", 1.0))
         min_name_length = int(body.get("min_name_length", 2))
 
         name = generate_name(model, maps, image_bytes, min_name_length=min_name_length, diversity=diversity)

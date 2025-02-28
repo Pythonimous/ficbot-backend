@@ -112,16 +112,27 @@ class SequenceVectorizer(Mapper):
             next_chars.append(text[i + maxlen])
         return sequences, next_chars
 
-    def vectorize(self, text, *, maxlen: int, step: int = 1):
 
+    def vectorize(self, text, *, maxlen: int, step: int = 1):
+        """
+        Converts text sequences into integer token indices instead of one-hot encoding.
+
+        Args:
+            text (str): Input text to vectorize.
+            maxlen (int): Maximum sequence length.
+            step (int): Step size for sequence generation.
+
+        Returns:
+            tuple: (list of sequences as token indices, list of next character indices)
+        """
         text_sequences, text_next_chars = self.sequenize(text, maxlen=maxlen, step=step)
 
-        vector_seq = np.zeros((len(text_sequences), maxlen, self.get_vocab_size()), dtype=bool)
-        vector_next = np.zeros((len(text_sequences), self.get_vocab_size()), dtype=bool)
+        vector_seq = np.zeros((len(text_sequences), maxlen), dtype=np.int64)
+        vector_next = np.zeros((len(text_sequences),), dtype=np.int64)  # token index per sequence
 
         for i, sequence in enumerate(text_sequences):
             for j, token in enumerate(sequence):
-                vector_seq[i, j, self._token_n[token]] = 1
-            vector_next[i, self._token_n[text_next_chars[i]]] = 1
+                vector_seq[i, j] = self._token_n[token]  # store indices of tokens of sequence
+            vector_next[i] = self._token_n[text_next_chars[i]]  # store index of next token
 
-        return vector_seq, vector_next
+        return vector_seq, vector_next 

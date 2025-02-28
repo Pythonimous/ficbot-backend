@@ -30,7 +30,7 @@ class TestInference(unittest.TestCase):
         
         payload = {
             "image": encoded_image,
-            "diversity": 1.2,
+            "diversity": 1.0,
             "min_name_length": 2
         }
 
