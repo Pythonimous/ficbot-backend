@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 
 from llama_cpp import Llama
 
-from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH
+from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH, NAME2BIO_MODEL_PATH
 from src.models.img2name.img2name import Img2Name
 from src.models.img2name.inference import load_model, generate_name
 from src.models.name2bio.inference import generate_bio
