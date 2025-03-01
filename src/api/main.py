@@ -1,5 +1,6 @@
 import base64
 import pickle
+import random
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -27,7 +28,8 @@ img2name_model = load_model(IMG2NAME_WEIGHTS_PATH, IMG2NAME_PARAMETERS_PATH, Img
 img2name_model.eval()
 
 print("Loading Name2Bio model...")
-name2bio_model = Llama(NAME2BIO_MODEL_PATH)
+random_seed = random.randint(0, 10**10)
+name2bio_model = Llama(NAME2BIO_MODEL_PATH, seed=random_seed)
 
 # Load character mappings
 with open(IMG2NAME_MAPS_PATH, "rb") as mp:
