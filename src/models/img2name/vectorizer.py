@@ -115,7 +115,7 @@ class SequenceVectorizer(Mapper):
 
     def vectorize(self, text, *, maxlen: int, step: int = 1):
         """
-        Converts text sequences into integer token indices instead of one-hot encoding.
+        Converts text sequences into integer token indices.
 
         Args:
             text (str): Input text to vectorize.

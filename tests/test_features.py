@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-from src.core.vectorizer import Mapper, SequenceVectorizer
+from src.models.img2name.vectorizer import Mapper, SequenceVectorizer
 
 
 class TestTokenizer(unittest.TestCase):

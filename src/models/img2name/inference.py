@@ -12,7 +12,7 @@ import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from src.core.utils import sample, preprocess_image_array
+from src.models.utils import sample, preprocess_image_array
 from src.models.img2name.img2name import Img2Name
 
 

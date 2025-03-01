@@ -13,7 +13,7 @@ from tqdm import tqdm
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from src.models.img2name.img2name import Img2Name
-from src.core.loaders import create_loader
+from src.models.img2name.loaders import create_loader
 
 
 def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
@@ -173,9 +173,6 @@ def parse_arguments():
     """ Parses command-line arguments for training. """
     parser = argparse.ArgumentParser(description="Train Img2Name model.")
 
-    parser.add_argument("--info", action="store_true", help="Show available models.")
-
-    parser.add_argument("--model", default="simple_img_name", choices=["simple_img_name"], help="Model to train.")
     parser.add_argument("--checkpoint", type=str, default=None, help="Path to checkpoint for resuming training.")
     parser.add_argument("--maps", type=str, default=None, help="Path to character mappings file (.pkl).")
 
@@ -196,10 +193,6 @@ def parse_arguments():
 
 def main(arguments):
     """ Main entry point for training. """
-    if arguments.info:
-        print("Models available for training:")
-        print("simple_img_name: Image to name model")
-        sys.exit()
 
     if arguments.checkpoint:
         train_from_checkpoint(arguments)

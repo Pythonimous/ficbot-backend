@@ -3,7 +3,7 @@ import os
 import torch
 import pandas as pd
 
-from src.core.loaders import create_loader
+from src.models.img2name.loaders import create_loader
 
 
 class TestLoaders(unittest.TestCase):
@@ -21,7 +21,6 @@ class TestLoaders(unittest.TestCase):
         # Use create_loader instead of manually creating DataLoader
         self.data_loader = create_loader(
             data_path=self.df_path,
-            load_for="simple_img_name",
             img_col="image",
             name_col="eng_name",
             img_dir=self.img_dir,
