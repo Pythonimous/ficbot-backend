@@ -6,8 +6,8 @@ from torch.nn.utils.rnn import pad_sequence
 
 import pandas as pd
 
-from src.core.utils import get_image
-from src.core.vectorizer import SequenceVectorizer
+from src.models.utils import get_image
+from src.models.img2name.vectorizer import SequenceVectorizer
 
 
 class ImageLoader(object):
@@ -162,7 +162,7 @@ def collate_fn(batch):
     return (X_img_batch, X_seq_batch), y_batch
 
 
-def create_loader(data_path, *, load_for, batch_size=1, shuffle=True, num_workers=4, **kwargs):
+def create_loader(data_path, *, batch_size=1, shuffle=True, num_workers=4, **kwargs):
     """Creates a PyTorch DataLoader from the given dataset.
 
     Args:
@@ -177,22 +177,18 @@ def create_loader(data_path, *, load_for, batch_size=1, shuffle=True, num_worker
         DataLoader: PyTorch DataLoader object.
     """
     dataframe = pd.read_csv(data_path)
-    models = {"simple_img_name"}
 
-    assert load_for in models, f"No such model.\nAvailable models: {', '.join(models)}."
+    loader = ImageNameLoader(
+        dataframe, kwargs["img_col"], kwargs["name_col"],
+        img_dir=kwargs["img_dir"],
+        image_shape=kwargs.get("img_shape", (224, 224, 3)),
+        transfer_net=kwargs.get("transfer_net", "mobilenet"),
+        vectorizer=kwargs.get("vectorizer", None),
+        start_token=kwargs.get("start_token", "@"),
+        end_token=kwargs.get("end_token", "$"),
+        maxlen=kwargs.get("maxlen", 3),
+        step=kwargs.get("step", 1),
+        shuffle=shuffle  # Shuffle is now handled by DataLoader, but we shuffle the DataFrame initially
+    )
 
-    if load_for == "simple_img_name":
-        loader = ImageNameLoader(
-            dataframe, kwargs["img_col"], kwargs["name_col"],
-            img_dir=kwargs["img_dir"],
-            image_shape=kwargs.get("img_shape", (224, 224, 3)),
-            transfer_net=kwargs.get("transfer_net", "mobilenet"),
-            vectorizer=kwargs.get("vectorizer", None),
-            start_token=kwargs.get("start_token", "@"),
-            end_token=kwargs.get("end_token", "$"),
-            maxlen=kwargs.get("maxlen", 3),
-            step=kwargs.get("step", 1),
-            shuffle=shuffle  # Shuffle is now handled by DataLoader, but we shuffle the DataFrame initially
-        )
-
-        return DataLoader(loader, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, collate_fn=collate_fn)
+    return DataLoader(loader, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, collate_fn=collate_fn)

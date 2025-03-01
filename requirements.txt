@@ -8,6 +8,4 @@ dataset
 sentencepiece
 torch
 torchvision
-accelerate
-evaluate
-tqdm
+llama-cpp-python
