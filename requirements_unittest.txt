@@ -11,3 +11,8 @@ bs4
 selenium
 tqdm
 torch
+transformers
+dataset
+sentencepiece
+torchvision
+llama-cpp-python
