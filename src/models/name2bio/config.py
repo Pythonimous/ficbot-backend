@@ -5,7 +5,8 @@ STOP_WORDS = {
     "chapter",
     "episode",
     "season",
-    "arc"
+    "arc",
+    "volume"
 }
 
 
