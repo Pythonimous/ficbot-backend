@@ -135,38 +135,56 @@ pip install -r requirements.txt
 1. Download character links (Selenium)
 
 ```bash
-python scripts/data/download.py --get_links --link_path LINKS_SAVE_PATH
+python scripts/data/download.py --get_links --link_path path/to/save/links.txt
 
 ```
 
 2. Download character data + images (Jikan API)
 
 ```bash
-python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTERS_SAVE_PATH --img_dir IMAGE_SAVE_DIRECTORY
+python scripts/data/download.py --link_path path/to/saved/links.txt --data_path path/to/save/data.csv --img_dir path/to/save/images
 
 ```
 
 ### Training and inference  
 
+#### [Img2name model](https://huggingface.co/Pythonimous/ficbot-img2name)
+
 1. Training from scratch
 
 ```bash
-python src/core/train.py --data_path DATA_PATH --img_col IMG_COL --name_col NAME_COL --img_dir IMG_DIR ---batch_size 16 --epochs 1 --maxlen 3 --optimizer adam -checkpoint_dir CHECKPOINT_DIR 
-
+python src/models/img2name/train.py --data_path path/to/your/data.csv --name_col NAME_COL --img_col IMG_COL --img_dir path/to/your/images --checkpoint_dir path/to/save/checkpoints --batch_size 16 --epochs 1 --maxlen 3
 ```
-
 2. Training from checkpoint
 
 ```bash
-python src/core/train.py --model MODEL_NAME --checkpoint CHECKPOINT_PATH --maps MAPS_PATH --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3 --optimizer adam
-
+python src/models/img2name/train.py --checkpoint path/to/your/checkpoint.pt --maps path/to/your/maps.pkl --data_path path/to/your/data.csv --name_col NAME_COL --img_col IMG_COL --img_dir path/to/your/images --checkpoint_dir path/to/save/checkpoints --batch_size 16 --epochs 1 --maxlen 3
 ```
 
- 3. Inference
+3. Inference
 
 ```bash
-python src/core/inference.py --model MODEL_NAME --model_path MODEL_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.0
-  ```
+python src/models/img2name/inference.py --model_path path/to/your/model --img_path path/to/your/image.jpg --min_name_length 2 --diversity 1.2
+```
+
+#### [Name2bio model](https://huggingface.co/Pythonimous/ficbot-name2bio)
+
+1. Training from scratch
+
+```bash
+python src/models/name2bio/train.py --csv_path path/to/your/data.csv --output_dir path/to/save/checkpoints --num_train_epochs 10
+```
+2. Training from checkpoint
+
+```bash
+python src/models/name2bio/train.py --csv_path path/to/your/data.csv --output_dir path/to/save/checkpoints --checkpoint path/to/saved/checkpoint --num_train_epochs 10
+```
+
+3. Inference
+
+```bash
+python src/models/name2bio/inference.py 'John Doe' --temperature 1.0 --min_length 50 --max_length 200
+```
 
 ## 🛠 Docker Deployment
 
@@ -175,28 +193,34 @@ This repository includes a Dockerfile for containerized deployment.
 ### 1️⃣ Build the Docker Image
 
 ```bash
-docker build -t img2name .
+docker build -t inference .
 
 ```
 
 ### 2️⃣ Run the Container
 
 ```bash
-docker run -p 8080:8080 img2name
-
-```  
+docker run -p 8080:8080 inference
+```
 
 Once running, you can access ficbot-backend endpoints at server address.
 You can test it using the following command:
 ```bash
 curl -X GET "http://localhost:8080/health"
-
 ```
-You can do inference using the following command:
+
+You can do inference using the following commands:
 ```bash
 curl -X POST "http://localhost:8080/generate" \
      -H "Content-Type: application/json" \
-     -d '{"image": "<YOUR_BINARY_IMAGE>", "diversity": 1.2, "min_name_length": 2}'
+     -d '{"image": "<YOUR_BINARY_IMAGE>", "diversity": 1.2, "min_name_length": 2, "type": "name"}'
+
+# OR
+
+curl -X POST "http://localhost:8080/generate" \
+     -H "Content-Type: application/json" \
+     -d '{"name": "John Doe", "diversity": 1.0, "max_bio_length": 300, "type": "bio"}'
+
 
 ```
 

@@ -10,20 +10,19 @@ import torch.optim as optim
 
 from tqdm import tqdm
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
 from src.models.img2name.img2name import Img2Name
 from src.models.img2name.loaders import create_loader
 
 
-def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
+def load_from_checkpoint(checkpoint_path, data_path, **kwargs):
     """
     Loads a model and dataset from a checkpoint.
 
     Args:
         checkpoint_path (str): Path to saved checkpoint.
         data_path (str): Path to dataset.
-        model_name (str): Name of the model.
         **kwargs: Additional loader arguments.
 
     Returns:
@@ -41,7 +40,7 @@ def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
     model = Img2Name(maxlen=init_params['maxlen'], vocab_size=init_params['vocab_size']).to(device)
     model.load_state_dict(checkpoint["model_state_dict"])
 
-    loader = create_loader(data_path, load_for=model_name, **kwargs)
+    loader = create_loader(data_path, load_for=Img2Name, **kwargs)
 
     loader.dataset.vectorizer.load_maps(*maps)
 
@@ -134,7 +133,7 @@ def train_from_scratch(arguments):
 
     loader = create_loader(
         data_path=arguments.data_path,
-        load_for=arguments.model,
+        load_for=Img2Name,
         img_col=arguments.img_col,
         name_col=arguments.name_col,
         img_dir=arguments.img_dir,
@@ -158,7 +157,6 @@ def train_from_checkpoint(arguments):
     model, loader = load_from_checkpoint(
         checkpoint_path=arguments.checkpoint,
         data_path=arguments.data_path,
-        model_name=arguments.model,
         img_dir=arguments.img_dir,
         batch_size=arguments.batch_size,
         maps_path=arguments.maps,

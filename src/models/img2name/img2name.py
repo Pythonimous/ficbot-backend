@@ -1,3 +1,5 @@
+import pickle
+
 import torch
 import torch.nn as nn
 import torchvision.models as models
@@ -74,3 +76,33 @@ class Img2Name(nn.Module):
         predictions = self.fc2(x)
 
         return predictions
+
+    @classmethod
+    def load_model(cls, weights_path, parameters_path):
+        """
+        Load a PyTorch model from a file.
+
+        Args:
+            model_path (str): Path to the model file.
+            model_class (type): Model class to instantiate.
+            init_params_path (str): Path to the file containing the model's initialization parameters.
+
+        Returns:
+            nn.Module: The loaded model.
+        """
+
+        with open(parameters_path, "rb") as f:
+            init_params = pickle.load(f)
+
+        model = cls(**init_params)
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        model_state_dict = torch.load(weights_path, map_location=device)
+
+        if 'model_state_dict' in model_state_dict:  # Checkpoint instead of just a state_dict
+            model_state_dict = model_state_dict['model_state_dict']
+
+        model.load_state_dict(model_state_dict)  # Load model for inference
+
+        return model

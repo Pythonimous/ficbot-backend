@@ -10,7 +10,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
 from src.models.utils import sample, preprocess_image_array
 from src.models.img2name.img2name import Img2Name
@@ -78,7 +78,14 @@ def generate_name(model, maps,
     return generated
 
 
-def parse_arguments():
+def main():
+    """
+    Main function for running inference.
+
+    Args:
+        arguments (argparse.Namespace): Parsed command-line arguments.
+    """
+
     parser = argparse.ArgumentParser(prog='Ficbot', description='Your friendly neighborhood fanfic writing assistant! '
                                                                 'Boost your imagination with a bit of AI magic.')
     
@@ -90,62 +97,15 @@ def parse_arguments():
     parser.add_argument('--diversity', default=1.2, type=float, help='diversity of predictions')
 
     args = parser.parse_args()
-    return args
-
-
-def load_model(weights_path, parameters_path, model_class):
-    """
-    Load a PyTorch model from a file.
-
-    Args:
-        model_path (str): Path to the model file.
-        model_class (type): Model class to instantiate.
-        init_params_path (str): Path to the file containing the model's initialization parameters.
-
-    Returns:
-        nn.Module: The loaded model.
-    """
-
-    with open(parameters_path, "rb") as f:
-        init_params = pickle.load(f)
-
-    model = model_class(**init_params)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    model_state_dict = torch.load(weights_path, map_location=device)
-
-    if 'model_state_dict' in model_state_dict:  # Checkpoint instead of just a state_dict
-        model_state_dict = model_state_dict['model_state_dict']
-
-    model.load_state_dict(model_state_dict)  # Load model for inference
-
-    return model
-
-
-def main(arguments):
-    """
-    Main function for running inference.
-
-    Args:
-        arguments (argparse.Namespace): Parsed command-line arguments.
-    """
 
     # Display available models if --info is used
-    if arguments.info:
+    if args.info:
         print("Models available for inference:")
         print("img2name: Image to name model")
         print("Good luck!")
         sys.exit()
-
-    models_dict = {'img2name': Img2Name}
-
-    if arguments.model not in models_dict:
-        raise ValueError("Model not available! Available models: img2name")
     
-    model_class = models_dict[arguments.model]
-    
-    model_path = arguments.model_path
+    model_path = args.model_path
     weights_path = os.path.join(model_path, f"weights.pt")
     parameters_path = os.path.join(model_path, f"params.pkl")
     maps_path = os.path.join(model_path, f"maps.pkl")
@@ -158,9 +118,9 @@ def main(arguments):
         raise ValueError(f"Maps path {maps_path} not found")
 
     # Load image
-    image_bytes = open(arguments.img_path, "rb").read()
+    image_bytes = open(args.img_path, "rb").read()
     
-    model = load_model(weights_path, parameters_path, model_class)
+    model = Img2Name.load_model(weights_path, parameters_path)
     
     model.eval()
 
@@ -169,12 +129,8 @@ def main(arguments):
         maps = pickle.load(f)
 
     # Generate name
-    name = generate_name(model, maps, image_bytes, min_name_length=arguments.min_name_length, diversity=arguments.diversity)
+    name = generate_name(model, maps, image_bytes, min_name_length=args.min_name_length, diversity=args.diversity)
     print(name)
 
 if __name__ == "__main__":
-    arguments = parse_arguments()
-    main(arguments)
-    '''
-    python src/core/inference.py --model img2name --model_path src/models/img2name/files/ --img_path tests/files/sample.jpg --diversity 1.0
-    '''
+    main()

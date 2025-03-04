@@ -9,7 +9,7 @@ from llama_cpp import Llama
 
 from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH, NAME2BIO_MODEL_PATH
 from src.models.img2name.img2name import Img2Name
-from src.models.img2name.inference import load_model, generate_name
+from src.models.img2name.inference import generate_name
 from src.models.name2bio.inference import generate_bio
 
 # Initialize FastAPI app
@@ -24,7 +24,7 @@ if settings.testing:
 
 # Load Torch model on startup
 print("Loading Img2Name model...")
-img2name_model = load_model(IMG2NAME_WEIGHTS_PATH, IMG2NAME_PARAMETERS_PATH, Img2Name)
+img2name_model = Img2Name.load_model(IMG2NAME_WEIGHTS_PATH, IMG2NAME_PARAMETERS_PATH)
 img2name_model.eval()
 
 print("Loading Name2Bio model...")
