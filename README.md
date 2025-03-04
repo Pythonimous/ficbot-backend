@@ -178,7 +178,7 @@ python src/models/img2name/train.py --checkpoint path/to/your/checkpoint.pt --ma
 3. Inference
 
 ```bash
-python src/models/img2name/inference.py --model_path path/to/your/model --img_path path/to/your/image.jpg --min_name_length N_WORDS --diversity 1.2
+python src/models/img2name/inference.py --model_path path/to/your/model --img_path path/to/your/image.jpg --min_name_length 2 --diversity 1.2
 ```
 
 #### Name2bio model

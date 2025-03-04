@@ -78,7 +78,14 @@ def generate_name(model, maps,
     return generated
 
 
-def parse_arguments():
+def main():
+    """
+    Main function for running inference.
+
+    Args:
+        arguments (argparse.Namespace): Parsed command-line arguments.
+    """
+
     parser = argparse.ArgumentParser(prog='Ficbot', description='Your friendly neighborhood fanfic writing assistant! '
                                                                 'Boost your imagination with a bit of AI magic.')
     
@@ -90,25 +97,15 @@ def parse_arguments():
     parser.add_argument('--diversity', default=1.2, type=float, help='diversity of predictions')
 
     args = parser.parse_args()
-    return args
-
-
-def main(arguments):
-    """
-    Main function for running inference.
-
-    Args:
-        arguments (argparse.Namespace): Parsed command-line arguments.
-    """
 
     # Display available models if --info is used
-    if arguments.info:
+    if args.info:
         print("Models available for inference:")
         print("img2name: Image to name model")
         print("Good luck!")
         sys.exit()
     
-    model_path = arguments.model_path
+    model_path = args.model_path
     weights_path = os.path.join(model_path, f"weights.pt")
     parameters_path = os.path.join(model_path, f"params.pkl")
     maps_path = os.path.join(model_path, f"maps.pkl")
@@ -121,7 +118,7 @@ def main(arguments):
         raise ValueError(f"Maps path {maps_path} not found")
 
     # Load image
-    image_bytes = open(arguments.img_path, "rb").read()
+    image_bytes = open(args.img_path, "rb").read()
     
     model = Img2Name.load_model(weights_path, parameters_path)
     
@@ -132,9 +129,8 @@ def main(arguments):
         maps = pickle.load(f)
 
     # Generate name
-    name = generate_name(model, maps, image_bytes, min_name_length=arguments.min_name_length, diversity=arguments.diversity)
+    name = generate_name(model, maps, image_bytes, min_name_length=args.min_name_length, diversity=args.diversity)
     print(name)
 
 if __name__ == "__main__":
-    arguments = parse_arguments()
-    main(arguments)
+    main()
