@@ -25,7 +25,6 @@ jobs:
           apt-get update && apt-get install -y build-essential cmake python3-dev git && rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
           pip install wheel flake8 pytest huggingface_hub
-          if [ -f requirements_unittest.txt ]; then pip install -r requirements_unittest.txt; fi
 
       - name: Download Hugging Face model files
         env:
@@ -40,6 +39,9 @@ jobs:
           # Download name2bio model file
           mkdir -p src/models/name2bio/files
           python -c "from huggingface_hub import hf_hub_download; import os; hf_hub_download(repo_id='Pythonimous/ficbot-name2bio', filename='name2bio.gguf', local_dir='src/models/name2bio/files/', use_auth_token=os.environ.get('HF_TOKEN'))"
+      - name: Install requirements
+        run: |
+          if [ -f requirements_unittest.txt ]; then pip install -r requirements_unittest.txt; fi
 
       - name: Lint with flake8
         run: |
