@@ -162,5 +162,6 @@ dmypy.json
 /scripts/data/interim
 
 /data
+/src/models/img2name/files
 /src/models/name2bio/files
 /src/models/name2bio/pretrained
