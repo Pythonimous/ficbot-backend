@@ -16,14 +16,13 @@ from src.models.img2name.img2name import Img2Name
 from src.models.img2name.loaders import create_loader
 
 
-def load_from_checkpoint(checkpoint_path, data_path, model_name, **kwargs):
+def load_from_checkpoint(checkpoint_path, data_path, **kwargs):
     """
     Loads a model and dataset from a checkpoint.
 
     Args:
         checkpoint_path (str): Path to saved checkpoint.
         data_path (str): Path to dataset.
-        model_name (str): Name of the model.
         **kwargs: Additional loader arguments.
 
     Returns:

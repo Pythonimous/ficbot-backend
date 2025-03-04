@@ -149,14 +149,14 @@ pip install -r requirements.txt
 1. Download character links (Selenium)
 
 ```bash
-python scripts/data/download.py --get_links --link_path LINKS_SAVE_PATH
+python scripts/data/download.py --get_links --link_path path/to/save/links.txt
 
 ```
 
 2. Download character data + images (Jikan API)
 
 ```bash
-python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTERS_SAVE_PATH --img_dir IMAGE_SAVE_DIRECTORY
+python scripts/data/download.py --link_path path/to/saved/links.txt --data_path path/to/save/data.csv --img_dir path/to/save/images
 
 ```
 
@@ -167,18 +167,18 @@ python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTE
 1. Training from scratch
 
 ```bash
-python src/models/img2name/train.py --data_path DATA_PATH --name_col NAME_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3
+python src/models/img2name/train.py --data_path path/to/your/data.csv --name_col NAME_COL --img_col IMG_COL --img_dir path/to/your/images --checkpoint_dir path/to/save/checkpoints --batch_size 16 --epochs 1 --maxlen 3
 ```
 2. Training from checkpoint
 
 ```bash
-python src/models/img2name/train.py --checkpoint CHECKPOINT_PATH --maps MAPS_PATH --data_path DATA_PATH --name_col NAME_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3
+python src/models/img2name/train.py --checkpoint path/to/your/checkpoint.pt --maps path/to/your/maps.pkl --data_path path/to/your/data.csv --name_col NAME_COL --img_col IMG_COL --img_dir path/to/your/images --checkpoint_dir path/to/save/checkpoints --batch_size 16 --epochs 1 --maxlen 3
 ```
 
 3. Inference
 
 ```bash
-python src/models/img2name/inference.py --model_path MODEL_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.2
+python src/models/img2name/inference.py --model_path path/to/your/model --img_path path/to/your/image.jpg --min_name_length N_WORDS --diversity 1.2
 ```
 
 #### Name2bio model
@@ -186,12 +186,12 @@ python src/models/img2name/inference.py --model_path MODEL_PATH --img_path IMG_P
 1. Training from scratch
 
 ```bash
-python src/models/name2bio/train.py --csv_path DATA_PATH --output_dir SAVE_DIR --num_train_epochs 10
+python src/models/name2bio/train.py --csv_path path/to/your/data.csv --output_dir path/to/save/checkpoints --num_train_epochs 10
 ```
 2. Training from checkpoint
 
 ```bash
-python src/models/name2bio/train.py --csv_path DATA_PATH --output_dir SAVE_DIR --checkpoint CHECKPOINT_DIR --num_train_epochs 10
+python src/models/name2bio/train.py --csv_path path/to/your/data.csv --output_dir path/to/save/checkpoints --checkpoint path/to/saved/checkpoint --num_train_epochs 10
 ```
 
 3. Inference
