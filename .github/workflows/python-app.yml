@@ -28,16 +28,18 @@ jobs:
           if [ -f requirements_unittest.txt ]; then pip install -r requirements_unittest.txt; fi
 
       - name: Download Hugging Face model files
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           # Download img2name model files
           mkdir -p src/models/img2name/files
-          python -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/maps.pkl', local_dir='src/models/img2name/')"
-          python -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/params.pkl', local_dir='src/models/img2name/')"
-          python -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/weights.pt', local_dir='src/models/img2name/')"
+          python -c "from huggingface_hub import hf_hub_download; import os; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/maps.pkl', local_dir='src/models/img2name/', use_auth_token=os.environ.get('HF_TOKEN'))"
+          python -c "from huggingface_hub import hf_hub_download; import os; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/params.pkl', local_dir='src/models/img2name/', use_auth_token=os.environ.get('HF_TOKEN'))"
+          python -c "from huggingface_hub import hf_hub_download; import os; hf_hub_download(repo_id='Pythonimous/ficbot-img2name', filename='files/weights.pt', local_dir='src/models/img2name/', use_auth_token=os.environ.get('HF_TOKEN'))"
           
           # Download name2bio model file
           mkdir -p src/models/name2bio/files
-          python -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Pythonimous/ficbot-name2bio', filename='name2bio.gguf', local_dir='src/models/name2bio/files/')"
+          python -c "from huggingface_hub import hf_hub_download; import os; hf_hub_download(repo_id='Pythonimous/ficbot-name2bio', filename='name2bio.gguf', local_dir='src/models/name2bio/files/', use_auth_token=os.environ.get('HF_TOKEN'))"
 
       - name: Lint with flake8
         run: |
