@@ -1,10 +1,13 @@
 import base64
 import pickle
 import random
+from io import BytesIO
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+import torch
+from PIL import Image
 from llama_cpp import Llama
 
 from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH, NAME2BIO_MODEL_PATH
@@ -27,15 +30,21 @@ print("Loading Img2Name model...")
 img2name_model = Img2Name.load_model(IMG2NAME_WEIGHTS_PATH, IMG2NAME_PARAMETERS_PATH)
 img2name_model.eval()
 
-print("Loading Name2Bio model...")
-random_seed = random.randint(0, 10**10)
-name2bio_model = Llama(NAME2BIO_MODEL_PATH, seed=random_seed)
-
 # Load character mappings
 with open(IMG2NAME_MAPS_PATH, "rb") as mp:
     img2name_maps = pickle.load(mp)
 
-print("Model and mappings loaded!")
+print("Loading Name2Bio model...")
+random_seed = random.randint(0, 10**10)
+name2bio_model = Llama(NAME2BIO_MODEL_PATH, seed=random_seed)
+
+# AnimeGAN2 model loaded from:
+# https://github.com/bryandlee/animegan2-pytorch
+print("Loading AnimeGAN2 model...")
+img2anime_model = torch.hub.load("bryandlee/animegan2-pytorch", "generator").eval()
+img2anime = torch.hub.load("bryandlee/animegan2-pytorch:main", "face2paint", size=512)
+
+print("Models and mappings loaded!")
 
 @app.post("/generate")
 async def generate_character(request: Request):
@@ -69,6 +78,33 @@ async def generate_character(request: Request):
         nsfw_on = body.get("nsfw_on", False)
         result = generate_bio(input_name, name2bio_model, diversity, max_length=max_bio_length, nsfw_on=nsfw_on)
         return JSONResponse(content={"success": True, "bio": result})
+
+
+@app.post("/convert_to_anime")
+async def convert_to_anime(request: Request):
+    """ Converts a given image into an anime-stylized image using AnimeGAN2. """
+    body = await request.json()
+    input_image = body.get("image")
+
+    if not input_image:
+        raise HTTPException(status_code=400, detail="Image must be provided for anime conversion.")
+    
+    try:
+        image_bytes = base64.b64decode(input_image)
+        img = Image.open(BytesIO(image_bytes)).convert("RGB")
+        
+        # Apply anime conversion
+        out = img2anime(img2anime_model, img)
+        
+        # Convert output image to base64
+        buffer = BytesIO()
+        out.save(buffer, format="PNG")
+        encoded_image = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        
+        return JSONResponse(content={"success": True, "anime_image": encoded_image})
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
 
 @app.get("/health")
