@@ -84,3 +84,20 @@ class TestInference(unittest.TestCase):
         self.assertIn("bio", response.json())
         self.assertIsInstance(response.json()["bio"], str)
         print(response.json()["bio"])
+
+        # anime conversion, but no image provided
+
+        payload = {}
+        response = client.post("/convert_to_anime", json=payload)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Image must be provided for anime conversion."})
+
+        # anime conversion
+
+        payload = {
+            "image": encoded_image
+        }
+        response = client.post("/convert_to_anime", json=payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("anime_image", response.json())
+        self.assertIsInstance(response.json()["anime_image"], str)
