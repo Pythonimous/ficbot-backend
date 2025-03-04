@@ -38,6 +38,8 @@ print("Loading Name2Bio model...")
 random_seed = random.randint(0, 10**10)
 name2bio_model = Llama(NAME2BIO_MODEL_PATH, seed=random_seed)
 
+# AnimeGAN2 model loaded from:
+# https://github.com/bryandlee/animegan2-pytorch
 print("Loading AnimeGAN2 model...")
 img2anime_model = torch.hub.load("bryandlee/animegan2-pytorch", "generator").eval()
 img2anime = torch.hub.load("bryandlee/animegan2-pytorch:main", "face2paint", size=512)
