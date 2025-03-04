@@ -162,25 +162,43 @@ python scripts/data/download.py --link_path LINKS_SAVE_PATH --data_path CHARACTE
 
 ### Training and inference  
 
+#### Img2name model
+
 1. Training from scratch
 
 ```bash
-python src/core/train.py --model MODEL_NAME --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3 --optimizer adam
-
+python src/models/img2name/train.py --data_path DATA_PATH --name_col NAME_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3
 ```
-
 2. Training from checkpoint
 
 ```bash
-python src/core/train.py --model MODEL_NAME --checkpoint CHECKPOINT_PATH --maps MAPS_PATH --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3 --optimizer adam
-
+python src/models/img2name/train.py --checkpoint CHECKPOINT_PATH --maps MAPS_PATH --data_path DATA_PATH --name_col NAME_COL --img_col IMG_COL --img_dir IMG_DIR --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1 --maxlen 3
 ```
 
- 3. Inference
+3. Inference
 
 ```bash
-python src/core/inference.py --model MODEL_NAME --model_path MODEL_PATH --maps MAPS_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.2
-  ```
+python src/models/img2name/inference.py --model_path MODEL_PATH --img_path IMG_PATH --min_name_length N_WORDS --diversity 1.2
+```
+
+#### Name2bio model
+
+1. Training from scratch
+
+```bash
+python src/models/name2bio/train.py --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1
+```
+2. Training from checkpoint
+
+```bash
+python src/models/name2bio/train.py --checkpoint CHECKPOINT_PATH --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1
+```
+
+3. Inference
+
+```bash
+python src/models/name2bio/inference.py 'John Doe' --temperature 1.0 --min_length 50 --max_length 200
+```
 
 ## 🛠 Docker Deployment
 
@@ -189,28 +207,34 @@ This repository includes a Dockerfile for containerized deployment.
 ### 1️⃣ Build the Docker Image
 
 ```bash
-docker build -t img2name .
+docker build -t inference .
 
 ```
 
 ### 2️⃣ Run the Container
 
 ```bash
-docker run -p 8080:8080 img2name
-
-```  
+docker run -p 8080:8080 inference
+```
 
 Once running, you can access ficbot-backend endpoints at server address.
 You can test it using the following command:
 ```bash
 curl -X GET "http://localhost:8080/health"
-
 ```
-You can do inference using the following command:
+
+You can do inference using the following commands:
 ```bash
 curl -X POST "http://localhost:8080/generate" \
      -H "Content-Type: application/json" \
-     -d '{"image": "<YOUR_BINARY_IMAGE>", "diversity": 1.2, "min_name_length": 2}'
+     -d '{"image": "<YOUR_BINARY_IMAGE>", "diversity": 1.2, "min_name_length": 2, "type": "name"}'
+
+# OR
+
+curl -X POST "http://localhost:8080/generate" \
+     -H "Content-Type: application/json" \
+     -d '{"name": "John Doe", "diversity": 1.0, "max_bio_length": 300, "type": "bio"}'
+
 
 ```
 

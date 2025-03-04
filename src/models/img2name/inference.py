@@ -10,7 +10,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
 from src.models.utils import sample, preprocess_image_array
 from src.models.img2name.img2name import Img2Name
@@ -137,13 +137,6 @@ def main(arguments):
         print("img2name: Image to name model")
         print("Good luck!")
         sys.exit()
-
-    models_dict = {'img2name': Img2Name}
-
-    if arguments.model not in models_dict:
-        raise ValueError("Model not available! Available models: img2name")
-    
-    model_class = models_dict[arguments.model]
     
     model_path = arguments.model_path
     weights_path = os.path.join(model_path, f"weights.pt")
@@ -160,7 +153,7 @@ def main(arguments):
     # Load image
     image_bytes = open(arguments.img_path, "rb").read()
     
-    model = load_model(weights_path, parameters_path, model_class)
+    model = load_model(weights_path, parameters_path, Img2Name)
     
     model.eval()
 
@@ -176,5 +169,5 @@ if __name__ == "__main__":
     arguments = parse_arguments()
     main(arguments)
     '''
-    python src/core/inference.py --model img2name --model_path src/models/img2name/files/ --img_path tests/files/sample.jpg --diversity 1.0
+    python src/models/img2name/inference.py --model_path src/models/img2name/files/ --img_path tests/files/sample.jpg --min_name_length 2 --diversity 1.0
     '''
