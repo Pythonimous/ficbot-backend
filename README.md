@@ -186,12 +186,12 @@ python src/models/img2name/inference.py --model_path MODEL_PATH --img_path IMG_P
 1. Training from scratch
 
 ```bash
-python src/models/name2bio/train.py --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1
+python src/models/name2bio/train.py --csv_path DATA_PATH --output_dir SAVE_DIR --num_train_epochs 10
 ```
 2. Training from checkpoint
 
 ```bash
-python src/models/name2bio/train.py --checkpoint CHECKPOINT_PATH --data_path DATA_PATH --name_col NAME_COL --bio_col BIO_COL --checkpoint_dir CHECKPOINT_DIR --batch_size 16 --epochs 1
+python src/models/name2bio/train.py --csv_path DATA_PATH --output_dir SAVE_DIR --checkpoint CHECKPOINT_DIR --num_train_epochs 10
 ```
 
 3. Inference
