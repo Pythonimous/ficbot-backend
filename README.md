@@ -183,7 +183,7 @@ python src/models/name2bio/train.py --csv_path path/to/your/data.csv --output_di
 3. Inference
 
 ```bash
-python src/models/name2bio/inference.py 'John Doe' --temperature 1.0 --min_length 50 --max_length 200
+python src/models/name2bio/inference.py 'John Doe' --temperature 1.0 --max_length 200
 ```
 
 ## 🛠 Docker Deployment

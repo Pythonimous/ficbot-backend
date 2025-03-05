@@ -75,10 +75,9 @@ async def generate_character(request: Request):
     if generate_type == "bio":
         if not input_name:
             raise HTTPException(status_code=400, detail="Name must be provided for bio generation.")
-        min_bio_length = int(body.get("min_bio_length", 100))
         max_bio_length = int(body.get("max_bio_length", 200))
         nsfw_on = body.get("nsfw_on", False)
-        result = generate_bio(input_name, name2bio_model, diversity, min_length=min_bio_length, max_length=max_bio_length, nsfw_on=nsfw_on)
+        result = generate_bio(input_name, name2bio_model, diversity, max_length=max_bio_length, nsfw_on=nsfw_on)
         return JSONResponse(content={"success": True, "bio": result})
 
 

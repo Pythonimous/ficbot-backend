@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 
 from src.models.name2bio.utils import is_bio_allowed
 
-def generate_bio(name, model, temperature=1.2, min_length=50, max_length=400, *, nsfw_on = False):
+def generate_bio(name, model, temperature=1.2, max_length=300, *, nsfw_on = False):
 
     names = name.split()
     if len(names) > 1:
@@ -25,10 +25,6 @@ def generate_bio(name, model, temperature=1.2, min_length=50, max_length=400, *,
             top_p=0.9,
             stop=["[END]"]
         )
-        token_length = output['usage']['completion_tokens']
-
-        if token_length < min_length:
-            continue
 
         bio = output['choices'][0]['text'].strip()
 
@@ -52,7 +48,6 @@ def main():
 
     # Optional arguments with default values
     parser.add_argument('--temperature', type=float, default=1.0, help="Temperature for text generation (default: 1.0).")
-    parser.add_argument('--min_length', type=int, default=50, help="Minimum length for the bio (default: 50).")
     parser.add_argument('--max_length', type=int, default=200, help="Maximum length for the bio (default: 200).")
 
     # Parse arguments
@@ -60,7 +55,6 @@ def main():
 
     character_name = args.character_name
     temperature = args.temperature
-    min_length = args.min_length
     max_length = args.max_length
 
     random_seed = random.randint(0, 2**31 - 1)  # Large random seed
@@ -69,7 +63,7 @@ def main():
     model_path = os.path.join(current_dir, 'files/name2bio.gguf')
     model = Llama(model_path, seed=random_seed)
 
-    print(generate_bio(character_name, model, temperature, min_length, max_length))
+    print(generate_bio(character_name, model, temperature, max_length))
 
 if __name__ == "__main__":
     main()
