@@ -67,16 +67,18 @@ async def generate_character(request: Request):
         if not input_image:
             raise HTTPException(status_code=400, detail="Image must be provided for name generation.")
         min_name_length = int(body.get("min_name_length", 2))
+        max_name_length = int(body.get("max_name_length", 4))
         image_bytes = base64.b64decode(input_image)
-        result = generate_name(img2name_model, img2name_maps, image_bytes, min_name_length=min_name_length, diversity=diversity)
+        result = generate_name(img2name_model, img2name_maps, image_bytes, min_name_length=min_name_length, max_name_length=max_name_length, diversity=diversity)
         return JSONResponse(content={"success": True, "name": result})
     
     if generate_type == "bio":
         if not input_name:
             raise HTTPException(status_code=400, detail="Name must be provided for bio generation.")
+        min_bio_length = int(body.get("min_bio_length", 100))
         max_bio_length = int(body.get("max_bio_length", 200))
         nsfw_on = body.get("nsfw_on", False)
-        result = generate_bio(input_name, name2bio_model, diversity, max_length=max_bio_length, nsfw_on=nsfw_on)
+        result = generate_bio(input_name, name2bio_model, diversity, min_length=min_bio_length, max_length=max_bio_length, nsfw_on=nsfw_on)
         return JSONResponse(content={"success": True, "bio": result})
 
 

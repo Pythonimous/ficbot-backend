@@ -17,7 +17,7 @@ from src.models.img2name.img2name import Img2Name
 
 
 def generate_name(model, maps,
-                  image_bytes, min_name_length=2, diversity=1.2,
+                  image_bytes, min_name_length=2, max_name_length=4, diversity=1.2,
                   start_token="@", end_token="$", ood_token="?"):
     """
     Generates a name using the PyTorch model.
@@ -62,8 +62,11 @@ def generate_name(model, maps,
                 next_index = sample(preds.squeeze().cpu().numpy(), diversity)
                 next_char = idx_char[next_index]
 
-            if next_char == end_token and generated.count(' ') < min_name_length - 1:
+            if next_char == end_token and generated.count(" ") < min_name_length - 1:
                 next_char = " "  # Ensure minimum name length
+
+            if next_char == " " and generated.count(" ") == max_name_length - 1:
+                next_char = end_token  # Ensure maximum name length
 
             name_tokens = torch.cat([name_tokens[:, 1:], torch.tensor([[char_idx[next_char]]], device=device)], dim=1)
             generated += next_char
