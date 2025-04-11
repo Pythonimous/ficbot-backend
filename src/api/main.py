@@ -10,7 +10,10 @@ import torch
 from PIL import Image
 from llama_cpp import Llama
 
-from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH, NAME2BIO_MODEL_PATH
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+
+from src.api.config import settings, IMG2NAME_WEIGHTS_PATH, IMG2NAME_MAPS_PATH, IMG2NAME_PARAMETERS_PATH, NAME2BIO_MODEL_PATH, NAME2BIO_EMBEDDINGS_PATH
 from src.models.img2name.img2name import Img2Name
 from src.models.img2name.inference import generate_name
 from src.models.name2bio.inference import generate_bio
@@ -24,6 +27,7 @@ if settings.testing:
     IMG2NAME_PARAMETERS_PATH = "src/models/img2name/files/params.pkl"
 
     NAME2BIO_MODEL_PATH = "src/models/name2bio/files/name2bio.gguf"
+    NAME2BIO_EMBEDDINGS_PATH = "src/models/name2bio/files/name2bio_embeddings"
 
 # Load Torch model on startup
 print("Loading Img2Name model...")
@@ -34,9 +38,14 @@ img2name_model.eval()
 with open(IMG2NAME_MAPS_PATH, "rb") as mp:
     img2name_maps = pickle.load(mp)
 
+print("Loading Name2Bio embeddings for RAG...")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+vector_db = FAISS.load_local(NAME2BIO_EMBEDDINGS_PATH, embeddings, allow_dangerous_deserialization=True)
+
 print("Loading Name2Bio model...")
 random_seed = random.randint(0, 10**10)
 name2bio_model = Llama(NAME2BIO_MODEL_PATH, seed=random_seed)
+
 
 # AnimeGAN2 model loaded from:
 # https://github.com/bryandlee/animegan2-pytorch
@@ -77,7 +86,7 @@ async def generate_character(request: Request):
             raise HTTPException(status_code=400, detail="Name must be provided for bio generation.")
         max_bio_length = int(body.get("max_bio_length", 200))
         nsfw_on = body.get("nsfw_on", False)
-        result = generate_bio(input_name, name2bio_model, diversity, max_length=max_bio_length, nsfw_on=nsfw_on)
+        result = generate_bio(input_name, name2bio_model, vector_db, diversity, max_length=max_bio_length, nsfw_on=nsfw_on)
         return JSONResponse(content={"success": True, "bio": result})
 
 

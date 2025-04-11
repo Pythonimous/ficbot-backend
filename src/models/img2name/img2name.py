@@ -76,6 +76,15 @@ class Img2Name(nn.Module):
         predictions = self.fc2(x)
 
         return predictions
+    
+
+    def image_embedding(self, image_input):
+        """Extracts embeddings from an image input."""
+        img_features = self.transfer(image_input)  # (batch_size, 960, 7, 7)
+        img_features = self.global_avg_pool(img_features)  # (batch_size, 960, 1, 1)
+        img_features = torch.flatten(img_features, start_dim=1)  # (batch_size, 960)
+        return img_features  # Return the extracted embedding
+
 
     @classmethod
     def load_model(cls, weights_path, parameters_path):

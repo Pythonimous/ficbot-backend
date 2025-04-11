@@ -33,6 +33,7 @@ COPY src/models/name2bio/*.py src/models/name2bio/
 RUN mkdir -p /app/src/models/name2bio/files && \
     python -c "from huggingface_hub import hf_hub_download; \
     hf_hub_download(repo_id='Pythonimous/ficbot-name2bio', filename='name2bio.gguf', local_dir='/app/src/models/name2bio/files/')"
+COPY src/models/name2bio/files/name2bio_embeddings src/models/name2bio/files
 
 EXPOSE 8080
 
