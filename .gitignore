@@ -164,6 +164,6 @@ dmypy.json
 /data
 /src/models/img2name/files
 /src/models/name2bio/files
+!/src/models/name2bio/files/name2bio_embeddings/*
 /src/models/name2bio/pretrained
 /src/models/img2name_rag
-/src/models/name2bio_rag
