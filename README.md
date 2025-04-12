@@ -63,7 +63,7 @@ Ficbot is now split into two repositories for better organization:
 - **AWS Lightsail:** Provides a cost-effective VPS solution for hosting the full application stack.
 
 ### 🧠 RAG-Inspired Pipeline
-Character names are vectorized and compared to the dataset of 100,000+ characters. The top-matching entries are used to extract genres and themes, which then guide bio generation. This retrieval-enhanced approach grounds outputs in contextually relevant tropes and improves narrative coherence.
+Character names are vectorized and compared to the dataset of top-1000 most popular characters from MyAnimeList.net. The top-matching entries are used to extract genres and themes, which then guide bio generation. This retrieval-enhanced approach grounds outputs in contextually relevant tropes and improves narrative coherence.
 
 ---
 
